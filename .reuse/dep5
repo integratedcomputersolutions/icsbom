@@ -1,0 +1,18 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: icsbom
+Upstream-Contact: ICS SBOM Team <icsbom@ics.com>
+Source: https://github.com/integratedcomputersolutions/icsbom
+
+Files: .github/*
+       .gitignore
+       poetry.toml
+       pyproject.toml
+Copyright: Ics inc.
+License: MIT
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+

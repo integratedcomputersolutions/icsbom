@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "icsbom"
+version = "1.0.0"
+description = "icsbom is a tool developed by Integrated Computing Solutions (ICS) for converting Software Bill of Materials (SBoM) into a Vex File."
+### Poetry apparently doesn't support multiline descriptions.
+#"""
+#iscbom is a collection of tools developed by Integrated Computing Solutions (ICS) for handling
+#Software Bill of Materials (SBoM) documentaion.
+#
+#This package contains:
+#    * icsbom        -- Updates the NVD cached file, reads the SBoM input (same as sbom_import), and searches for any
+#                       CVEs that match the packages found in the input.  This tool can output `*.csv`, `*.txt`, or
+#                        `*.json.vex` and also has an interactive mode to viewing the search results.
+#"""
+authors = ["Michael Dingwall <mdingwall@ics.com>",
+    "Chris Rizzitello <crizzitello@ics.com>",
+    "Sergey Missan <smissan@ics.com>",
+    "Qin Zhang <qzhang@ics.com>",
+    "Gerardo Stola <gstola@ics.com>"]
+readme = "README.md"
+
+# adding the sbom libraries.
+packages = [
+    { include = "icsbom" },
+]
+
+[tool.poetry.scripts]
+icsbom = 'icsbom:main'
+
+[tool.poetry.dependencies]
+ics_sbom_libs = ">=1.1.2"
+python = "^3.11"
+rich = "*"
+rich-argparse = "*"
+
+[tool.poetry.dev-dependencies]
+# Testing framework
+pytest = "*"
+pytest-cov = "*"
+
+# Create standalone executables
+pyinstaller = "*"
+
+# Code formatting
+black = "*"
+
+# Python linting tool
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-pyproject = "*"
+
+[tool.black]
+line-length = 120
+preview = true
+target-version = ["py37", "py38", "py39", "py310", "py311"]
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.pytest.ini_options]
+minversion = "6.0.2"
+testpaths = ["tests"]
+python_files = ['*.py']
+python_functions = ['test_*']
+addopts = ['-vvv'] #, '--cov-report html:reports/coverage']  #, '--html=reports/tests.html', '--self-contained-html']
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "*"
+sphinx-rtd-theme = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
