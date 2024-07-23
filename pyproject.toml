@@ -29,7 +29,7 @@ icsbom = 'icsbom:main'
 
 [tool.poetry.dependencies]
 ics_sbom_libs = ">=1.1.2"
-python = "^3.11"
+python = "^3.9"
 rich = "*"
 rich-argparse = "*"
 
