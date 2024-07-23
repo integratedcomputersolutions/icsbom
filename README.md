@@ -3,7 +3,8 @@
    SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# icsbom [![PyPI version](https://badge.fury.io/py/icsbom.svg)](https://badge.fury.io/py/icsbom) [![REUSE status](https://api.reuse.software/badge/github.com/integratedcomputersolutions/icsbom)](https://api.reuse.software/info/github.com/integratedcomputersolutions/icsbom)
+Icsbom [![REUSE status](https://api.reuse.software/badge/github.com/integratedcomputersolutions/icsbom)](https://api.reuse.software/info/github.com/integratedcomputersolutions/icsbom) [![PyPI - Version](https://img.shields.io/pypi/v/icsbom)](https://pypi.org/project/icsbom/)
+===
 This application downloads data from the nvd api and creates a local `Vunerability Database`.
 If the database already exists it will be updated with changes since your last update.
 It then uses that data to check the provided sbom file and give you a Vunerability report
