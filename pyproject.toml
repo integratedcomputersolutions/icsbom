@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "icsbom"
 version = "1.0.1"
-description = "icsbom is a tool developed by Integrated Computing Solutions (ICS) for converting Software Bill of Materials (SBoM) into a Vex File."
+description = "icsbom is a tool developed by Integrated Computer Solutions (ICS) for converting Software Bill of Materials (SBoM) into a Vex File."
 ### Poetry apparently doesn't support multiline descriptions.
 #"""
-#iscbom is a collection of tools developed by Integrated Computing Solutions (ICS) for handling
+#iscbom is a collection of tools developed by Integrated Computer Solutions (ICS) for handling
 #Software Bill of Materials (SBoM) documentaion.
 #
 #This package contains:
