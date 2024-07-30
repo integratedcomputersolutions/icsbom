@@ -65,4 +65,3 @@ It then uses that data to check the provided sbom file and give you a Vunerabili
 
 # Requirements
  requires [ics_sbom_libs](https://github.com/integratedcomputersolutions/ics-sbom-libs)
-
