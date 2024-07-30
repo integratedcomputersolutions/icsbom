@@ -2,12 +2,14 @@ name: CI
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
     branches: [ main ]
     tags:
       - 'v*'
   pull_request:
     branches: [ main ]
-
 jobs:
   prebuild:
     name: Job Info
