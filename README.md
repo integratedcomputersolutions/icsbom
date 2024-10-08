@@ -5,9 +5,9 @@
 
 ICSbom ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/integratedcomputersolutions/icsbom/build.yml) [![REUSE status](https://api.reuse.software/badge/github.com/integratedcomputersolutions/icsbom)](https://api.reuse.software/info/github.com/integratedcomputersolutions/icsbom) [![PyPI - Version](https://img.shields.io/pypi/v/icsbom)](https://pypi.org/project/icsbom/) ![PyPI - Downloads](https://img.shields.io/pypi/dm/icsbom)
 ===
-This application downloads data from the nvd api and creates a local `Vunerability Database`.
+This application downloads data from the nvd api and creates a local `Vulnerability Database`.
 If the database already exists it will be updated with changes since your last update.
-It then uses that data to check the provided sbom file and give you a Vunerability report. This tool is used by [SBOMGuard](https://sbomguard.com) ICS' open source, web-based cloud service.
+It then uses that data to check the provided sbom file and give you a Vulnerability report. This tool is used by [SBOMGuard](https://sbomguard.com) ICS' open source, web-based cloud service.
 
 ## Usage
  icsbom [OPTIONS] INPUTFILE
