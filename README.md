@@ -7,7 +7,7 @@ ICSbom ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/w
 ===
 This application downloads data from the nvd api and creates a local `Vunerability Database`.
 If the database already exists it will be updated with changes since your last update.
-It then uses that data to check the provided sbom file and give you a Vunerability report
+It then uses that data to check the provided sbom file and give you a Vunerability report. This tool is used by [SBOMGuard](https://sbomguard.com) ICS' open source, web-based cloud service.
 
 ## Usage
  icsbom [OPTIONS] INPUTFILE
