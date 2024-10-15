@@ -1,0 +1,10 @@
+version = 1
+SPDX-PackageName = "icsbom"
+SPDX-PackageSupplier = "ICS SBOM Team <icsbom@ics.com>"
+SPDX-PackageDownloadLocation = "https://github.com/integratedcomputersolutions/icsbom"
+
+[[annotations]]
+path = [".github/**", ".gitignore", "poetry.toml", "pyproject.toml", "REUSE.toml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ics inc."
+SPDX-License-Identifier = "MIT"
