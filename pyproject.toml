@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "icsbom"
-version = "1.0.2"
+version = "1.1.0"
 description = "icsbom is a tool developed by Integrated Computer Solutions (ICS) for converting Software Bill of Materials (SBoM) into a Vex File."
 ### Poetry apparently doesn't support multiline descriptions.
 #"""
@@ -28,7 +28,7 @@ packages = [
 icsbom = 'icsbom:main'
 
 [tool.poetry.dependencies]
-ics_sbom_libs = ">=1.1.3"
+ics_sbom_libs = ">=1.2.0"
 python = "^3.9"
 rich = "*"
 rich-argparse = "*"
