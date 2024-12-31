@@ -102,7 +102,7 @@ def create_results_overview(input_sbom_file: Path, cve_matcher: CveMatcher, proc
         overview += [
             (
                 console_output.format_string(
-                    f"{severity}", vuln_info[severity], vulnerability_styles[severity], left_justify=False
+                    f"{severity}", vuln_info[severity], vulnerability_styles[severity].style, left_justify=False
                 )
             )
         ]
@@ -386,7 +386,7 @@ def review(input_sbom_file: Path, input_sbom, match_results, output_sbom, parse_
         for severity in vuln_info.keys():
             print(
                 console_output.format_string(
-                    f"{severity}", vuln_info[severity], vulnerability_styles[severity], left_justify=False
+                    f"{severity}", vuln_info[severity], vulnerability_styles[severity].style, left_justify=False
                 )
             )
 
