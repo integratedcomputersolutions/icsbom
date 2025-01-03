@@ -70,7 +70,8 @@ parser = argparse.ArgumentParser(
 )
 logging_setup.setup_log_arg(parser)
 VulnerabilityDatabase.setup_args(parser)
-parser.add_argument("file", type=Path, help="Input File")
+parser.add_argument("--update-db-only", action="store_true", help="Updates the local NVD database cache only.")
+parser.add_argument("-f", "--file", type=Path, help="Input File")
 parser.add_argument("-o", metavar="OutFile", type=str, help="Output File, [*.txt, *.csv, *.html, *.json.vex]")
 parser.add_argument(
     "-i", "--interactive", action="store_true", help="run interactively after matching to view cve data"
@@ -615,11 +616,19 @@ def main():
     if not args.skip_db_update:
         db.create_database()
 
+    if args.update_db_only:
+        return
+
+    if not args.file:
+        print("[red][b]ERROR:[/b] missing the input file.[/]", flush=True)
+        parser.print_help()
+        return -1
+
     print(f"Parsing File {args.file}", flush=True)
     start_time = time.time()
-    parser = FilteredParser()
-    parser.process_args(args)
-    imported_sbom = parser.parse(args.file)
+    filtered_parser = FilteredParser()
+    filtered_parser.process_args(args)
+    imported_sbom = filtered_parser.parse(args.file)
     matcher = CveMatcher(spdx_document=imported_sbom, db_path=db.db_path)
     finish_time = time.time()
     parse_time = finish_time - start_time
