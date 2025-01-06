@@ -17,10 +17,12 @@ from rich.style import Style
 from rich.color import Color
 from rich.text import Text
 from rich import print, print_json
-from rich_argparse import RichHelpFormatter
+from rich_argparse import RawTextRichHelpFormatter
 
 from decimal import Decimal
 from pathlib import Path
+
+from spdx_tools.spdx.model import Document as SPDXDocument
 
 from ics_sbom_libs.common import logging_setup, console_output
 from ics_sbom_libs.common.vulnerability import vulnerability_styles
@@ -66,7 +68,7 @@ script_name = Path(__file__).stem
 
 # Setup Args
 parser = argparse.ArgumentParser(
-    prog=script_name, description="process spdx sbom files", formatter_class=RichHelpFormatter
+    prog=script_name, description="process spdx sbom files", formatter_class=RawTextRichHelpFormatter
 )
 logging_setup.setup_log_arg(parser)
 VulnerabilityDatabase.setup_args(parser)
@@ -77,6 +79,18 @@ parser.add_argument(
     "-i", "--interactive", action="store_true", help="run interactively after matching to view cve data"
 )
 parser.add_argument("-s", "--skip-db-update", action="store_true", help="Skip database update")
+parser.add_argument(
+    "-l",
+    "--lookup",
+    action="append",
+    help="""Lookup packages using key/value pair descriptions with the following keys: 'vendor',\
+'product', 'version'. Each lookup description must have 'product' key/value pair.
+Examples:
+\t-l 'product=libcurl'
+\t-l 'vendor=curl,product=libcurl'
+\t-l 'product=libcurl,version=8.11'
+\t-l 'vendor=curl,product=libcurl,version=8.11'""",
+)
 
 FilteredParser.setup_args(parser)
 args = parser.parse_args()
@@ -89,13 +103,17 @@ def create_results_overview(input_sbom_file: Path, cve_matcher: CveMatcher, proc
     overview = [console_output.format_string("{:<25}".format("SBoM File Scanned"), f"{input_sbom_file}")]
     overview += [console_output.format_string("{:<25}".format("Time of last scan"), f"{cve_matcher.scanTime}")]
     overview += [console_output.format_string("{:<25}".format("Scanning Time"), f"{processing_time:.3f} Seconds")]
-    overview += [console_output.format_string("{:<25}".format("Packages Scanned"), f"{cve_matcher.totalPackages}")]
-    overview += [console_output.format_string("{:<25}".format("Packages With Issues"), f"{cve_matcher.dirtyPackages}")]
     overview += [
-        console_output.format_string("{:<25}".format("Packages Without Issues"), f"{cve_matcher.cleanPackages}")
+        console_output.format_string("{:<25}".format("Packages Scanned"), f"{cve_matcher.total_package_count}")
+    ]
+    overview += [
+        console_output.format_string("{:<25}".format("Packages With Issues"), f"{cve_matcher.dirty_package_count}")
+    ]
+    overview += [
+        console_output.format_string("{:<25}".format("Packages Without Issues"), f"{cve_matcher.clean_package_count}")
     ]
     overview += [console_output.format_string("{:<25}".format("CVEs"), "")]
-    overview += [console_output.format_string("Total", f"{cve_matcher.totalCves}", left_justify=False)]
+    overview += [console_output.format_string("Total", f"{cve_matcher.total_cve_count}", left_justify=False)]
 
     vuln_info = cve_matcher.get_severity_info()
     for severity in list(vuln_info.keys())[1:]:
@@ -156,7 +174,7 @@ def write_html(output_file: Path, input_sbom_file: Path, cve_matcher: CveMatcher
 
 def write_csv(output_file: Path, cve_matcher: CveMatcher):
     f = open(output_file, "w")
-    for result in cve_matcher.resultList:
+    for result in cve_matcher.result_list:
         f.write(f"{result.csvify}\n")
     f.close()
     print(f"Wrote To file {output_file}")
@@ -196,7 +214,7 @@ def make_vex(sbom, matcher):
         bom_ref=sbom.creation_info.name if sbom else "simplified-bom",
     )
 
-    for result in matcher.resultList:
+    for result in matcher.result_list:
         # Need both results with and without CVEs
         component_name = result.name
         component_version = result.version
@@ -209,7 +227,7 @@ def make_vex(sbom, matcher):
                 type=ComponentType.LIBRARY,
                 name=package.name,
                 version=package.version,
-                bom_ref=component_name + "@" + component_version,
+                bom_ref=component_name + ("@" + component_version if component_version else ""),
                 purl=PackageURL("generic", "ics", component_name, component_version),
             )
 
@@ -234,7 +252,7 @@ def make_vex(sbom, matcher):
                 version=component_version,
                 licenses=[lc_factory.make_from_string("(c) 2024 ICS inc.")],
                 supplier=OrganizationalEntity(name="ICS Inc", urls=[XsUri("https://www.ics.com")]),
-                bom_ref=component_name + "@" + component_version,
+                bom_ref=component_name + ("@" + component_version if component_version else ""),
                 purl=PackageURL("generic", "ics", component_name, component_version),
             )
         bom.components.add(component)
@@ -405,8 +423,8 @@ def review(input_sbom_file: Path, input_sbom, match_results, output_sbom, parse_
         main.process_stack.pop()
 
     print(help_string)
-    package_list = [pkg.name for pkg in match_results.resultList]
-    vulnerable_package_list = [pkg.name for pkg in match_results.resultList if pkg.cve_list]
+    package_list = [pkg.name for pkg in match_results.result_list]
+    vulnerable_package_list = [pkg.name for pkg in match_results.result_list if pkg.cve_list]
 
     package_completions = ReviewCompleter(
         ["view", "review", "search_cpes", "write_csv", "write_txt", "write_html", "write_vex", "list", "exit"],
@@ -441,7 +459,7 @@ def review(input_sbom_file: Path, input_sbom, match_results, output_sbom, parse_
 
             elif cmd_args[1] in vulnerable_package_list:
                 pkg_index = package_list.index(cmd_args[1])
-                review_package = match_results.resultList[pkg_index]
+                review_package = match_results.result_list[pkg_index]
                 if main.reviewing >= 0:
                     main.process_stack.pop()
 
@@ -461,7 +479,7 @@ def review(input_sbom_file: Path, input_sbom, match_results, output_sbom, parse_
 
             elif cmd_args[1] in package_list:
                 pkg_index = package_list.index(cmd_args[1])
-                print_match_result(match_results.resultList[pkg_index])
+                print_match_result(match_results.result_list[pkg_index])
                 continue
 
         elif command.lower().startswith("search_cpes"):
@@ -619,17 +637,50 @@ def main():
     if args.update_db_only:
         return
 
-    if not args.file:
-        print("[red][b]ERROR:[/b] missing the input file.[/]", flush=True)
+    if not args.file and len(args.lookup) == 0:
+        print("[red][b]ERROR:[/b] missing the input file `-f` or lookups `-l`.[/]", flush=True)
         parser.print_help()
         return -1
 
-    print(f"Parsing File {args.file}", flush=True)
     start_time = time.time()
     filtered_parser = FilteredParser()
     filtered_parser.process_args(args)
-    imported_sbom = filtered_parser.parse(args.file)
-    matcher = CveMatcher(spdx_document=imported_sbom, db_path=db.db_path)
+
+    imported_sbom: SPDXDocument
+    matcher = CveMatcher(db_path=db.db_path)
+    if args.file:
+        print(f"Parsing File {args.file}", flush=True)
+        imported_sbom = filtered_parser.parse(args.file)
+        matcher.spdx_document = imported_sbom
+
+    elif len(args.lookup) > 0:
+        print("Looking up packages:")
+        for package_description in args.lookup:
+            package_description_parts = {"product": None, "version": None, "vendor": None}
+            package_description = package_description.strip("'").strip('"')
+            package_parts = package_description.split(",")
+            for part in package_parts:
+                key_value = part.split("=")
+                if key_value[0].lower() in package_description_parts:
+                    package_description_parts[key_value[0].lower()] = key_value[1]
+
+            matcher.add_package(
+                package_description_parts["product"],
+                package_description_parts["version"],
+                package_description_parts["vendor"],
+            )
+
+        imported_sbom = matcher.spdx_document
+
+    else:
+        print("[red][b]ERROR:[/b] Really missing any inputs.[/]", flush=True)
+
+    try:
+        matcher.process()
+    except RuntimeError as err:
+        print(f"[red][b]ERROR:[/b]{err.args[0]}[/red]")
+        exit(1)
+
     finish_time = time.time()
     parse_time = finish_time - start_time
 
