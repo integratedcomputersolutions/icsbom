@@ -118,10 +118,8 @@ def create_results_overview(input_sbom_file: Path, cve_matcher: CveMatcher, proc
     vuln_info = cve_matcher.get_severity_info()
     for severity in list(vuln_info.keys())[1:]:
         overview += [
-            (
-                console_output.format_string(
-                    f"{severity}", vuln_info[severity], vulnerability_styles[severity].style, left_justify=False
-                )
+            console_output.format_string(
+                f"{severity}", vuln_info[severity], vulnerability_styles[severity].style, left_justify=False
             )
         ]
 
