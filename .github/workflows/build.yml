@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: pipx install black flake8
       - name: Check Code Formating
-        run: black -l 120 -t py37 -t py38 -t py39 -t py310 -t py311 --preview --check  icsbom/ || true
+        run: black -l 120 -t py37 -t py38 -t py39 -t py310 -t py311 --preview --check  icsbom/
       - name: Check Code Quality
         run: flake8 --max-line-length 120 icsbom/
       - name: Check Reuse Compliance
