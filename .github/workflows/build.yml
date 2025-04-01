@@ -55,6 +55,8 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
+        sudo apt update -qqq > /dev/null
+        sudo apt install -qqq unixodbc-dev > /dev/null
         pipx install poetry
         poetry --version
         poetry config virtualenvs.in-project true
