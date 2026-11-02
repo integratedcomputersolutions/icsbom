@@ -17,6 +17,7 @@ from rich.style import Style
 from rich.color import Color
 from rich.text import Text
 from rich import print, print_json
+from rich.markup import escape
 from rich_argparse import RawTextRichHelpFormatter
 
 from decimal import Decimal
@@ -26,7 +27,7 @@ from spdx_tools.spdx.model import Document as SPDXDocument
 
 from ics_sbom_libs.common import logging_setup, console_output
 from ics_sbom_libs.common.vulnerability import vulnerability_styles
-from ics_sbom_libs.cve_fetch.vulnerabilitydatabase import VulnerabilityDatabase
+from ics_sbom_libs.cve_fetch.vulnerabilitydatabase import VulnerabilityDatabase, DatabaseUpdateError
 from ics_sbom_libs.sbom_import.parse_anything import FilteredParser
 from ics_sbom_libs.cve_match.matchresult import MatchResult
 from ics_sbom_libs.cve_match.cvematcher import CveMatcher, MatchTableOutput
@@ -630,7 +631,17 @@ def main():
     db = VulnerabilityDatabase()
     db.process_args(args)
     if not args.skip_db_update:
-        db.create_database()
+        try:
+            db.create_database()
+        except DatabaseUpdateError as err:
+            for source, reason in err.failures.items():
+                print(f"[red][b]ERROR:[/b] NVD {source.upper()} database update failed:[/] {escape(reason)}")
+            print(
+                "Progress was saved; re-run to resume the update, "
+                "or use [b]-s/--skip-db-update[/] to continue with the existing cache.",
+                flush=True,
+            )
+            return 1
 
     if args.update_db_only:
         return

@@ -7,4 +7,4 @@ __all__ = ["icsbom"]
 
 
 def main():
-    icsbom.main()
+    return icsbom.main()
