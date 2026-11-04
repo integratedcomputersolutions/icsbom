@@ -28,12 +28,13 @@ packages = [
 icsbom = 'icsbom:main'
 
 [tool.poetry.dependencies]
-ics_sbom_libs = ">=1.2.1"
+#ics_sbom_libs = ">=1.2.1"
+ics_sbom_libs = { path = "../ics-sbom-libs", develop = true }
 python = "^3.9"
 rich = "*"
 rich-argparse = "*"
 
-[tool.poetry.dev-dependencies]
+[poetry.group.dev.dependencies]
 # Testing framework
 pytest = "*"
 pytest-cov = "*"
@@ -52,7 +53,7 @@ flake8-pyproject = "^1.2.3"
 [tool.black]
 line-length = 120
 preview = true
-target-version = ["py37", "py38", "py39", "py310", "py311"]
+target-version = ["py37", "py38", "py39", "py310", "py311", "py312", "py313"]
 
 [tool.flake8]
 max-line-length = 120
