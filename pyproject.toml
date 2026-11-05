@@ -28,13 +28,12 @@ packages = [
 icsbom = 'icsbom:main'
 
 [tool.poetry.dependencies]
-#ics_sbom_libs = ">=1.2.1"
-ics_sbom_libs = { path = "../ics-sbom-libs", develop = true }
+ics_sbom_libs = ">=1.2.1"
 python = "^3.9"
 rich = "*"
 rich-argparse = "*"
 
-[poetry.group.dev.dependencies]
+[tool.poetry.group.dev.dependencies]
 # Testing framework
 pytest = "*"
 pytest-cov = "*"
