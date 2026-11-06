@@ -33,7 +33,7 @@ python = "^3.9"
 rich = "*"
 rich-argparse = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 # Testing framework
 pytest = "*"
 pytest-cov = "*"
@@ -42,7 +42,7 @@ pytest-cov = "*"
 pyinstaller = "*"
 
 # Code formatting
-black = "^25.1.0"
+black = "^26.10.1"
 
 # Python linting tool
 flake8 = "^7.2.0"
@@ -52,7 +52,7 @@ flake8-pyproject = "^1.2.3"
 [tool.black]
 line-length = 120
 preview = true
-target-version = ["py37", "py38", "py39", "py310", "py311"]
+target-version = ["py37", "py38", "py39", "py310", "py311", "py312", "py313"]
 
 [tool.flake8]
 max-line-length = 120
