@@ -54,13 +54,14 @@ It then uses that data to check the provided sbom file and give you a Vulnerabil
  - `FILTER_OUT` should end in .json
  - Useful to adjust the filters for your projects needs.
 
-`-t` TAR_DIR_PATTERN
+`-t` `TAR_DIR_PATTERN`
  - Used when the input file is a tarball crated by a yocto build process
  - process the contents of the subdir matching the TAR_DIR_PATTERN
  - Valid Patterns: recipies, packages
  - Default: packages
 
-`INPUTFILE` The input file
+`-f` `INPUTFILE` 
+ - The input file
  - File can be a sbom or tarball
 
 # Requirements
